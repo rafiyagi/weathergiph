@@ -4,8 +4,8 @@ Gives you the current weather of a location, but in a giphy format!
 
 A simple [create-react-app](CRA-README.md) setup with React-Bootstrap.
 
-Uses https://openweathermap.org/current
+Uses https://openweathermap.org/current and https://developers.giphy.com/docs/ap
 
 ## Caveats:
 
-- This app is only available in the United States.
+- This app is only available in the United States and uses Fahrenheit.
