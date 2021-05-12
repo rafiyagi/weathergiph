@@ -1,10 +1,23 @@
 import React, {ChangeEventHandler, useState, FormEvent} from 'react';
 import {Jumbotron, Container, Alert, Spinner, Card, Form, Button, InputGroup} from 'react-bootstrap';
-import OpenWeather, {OpenWeatherResponse} from './openWeather'
+import OpenWeather from './openWeather'
+import { GiphyFetch } from '@giphy/js-fetch-api'
+import { IGif } from "@giphy/js-types";
+import { Gif } from "@giphy/react-components";
 
 const App = (): JSX.Element => {
 	const [zip, setZip] = useState<string>('')
-	const [getWeatherByZip, response, errMsg, processing] = OpenWeather()
+    const [gif, setGif] = useState<IGif | null>(null);
+    const [getWeatherByZip, weatherData, errMsg, processing] = OpenWeather()
+
+    const giphyFetch = new GiphyFetch('sXpGFDGZs0Dv1mmNFvYaGUvYwKX0PWIh')
+
+    const getGif = async () => {
+        const searchTerm = `${weatherData?.city} ${weatherData?.description}`
+        const { data } = await giphyFetch.search(searchTerm, { sort: 'relevant', lang: 'en', limit: 20, type: 'gifs' });
+        const randomIndex = Math.floor(Math.random() * 20)
+        setGif(data?.[randomIndex])
+    }
 
 	const handleLocationInputChange: ChangeEventHandler<HTMLInputElement> = ({
 		target
@@ -15,17 +28,10 @@ const App = (): JSX.Element => {
 	const handleSubmit = async (e: FormEvent) => {
 	    e.preventDefault()
 		await getWeatherByZip(zip)
+		await getGif()
         if(errMsg.length > 0) {
             setZip('')
         }
-	}
-
-	const formatResponse = (response: OpenWeatherResponse) => {
-	    if(response) {
-            return `${response.city}: ${response.description}`
-	    } else {
-	        return ''
-	    }
 	}
 
 	return (
@@ -43,13 +49,15 @@ const App = (): JSX.Element => {
                     <i>WeatherGiphy - the overly dramatic weather app</i>
                 </h1>
             </Jumbotron>
-            {response && (
+            {weatherData && gif && (
                 <Card style={{marginLeft: 'auto', marginRight: 'auto', width: 500}}>
-                    <Card.Header>{response.city}</Card.Header>
-                    {/*<Card.Img variant="top" src="holder.js/100px180" />*/}
+                    <Card.Header>{weatherData.city}</Card.Header>
+                    <div style={{textAlign: "center"}}>
+                        <Gif gif={gif} width={500}/>
+                    </div>
                     <Card.Body>
                         <Card.Text style={{textTransform: 'capitalize'}}>
-                            {response.description} | Feels like {response.feels_like}°F
+                            {weatherData.description} | Feels like {weatherData.feels_like}°F
                         </Card.Text>
                     </Card.Body>
                 </Card>
