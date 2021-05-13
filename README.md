@@ -1,4 +1,4 @@
-# WeatherGiph!
+# WeatherGiphy!
 
 Gives you the current weather of a location, but in a giphy format!
 
