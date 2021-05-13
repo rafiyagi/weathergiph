@@ -21,6 +21,8 @@ REACT_APP_OPEN_WEATHER_API_KEY = <API_KEY>
 REACT_APP_GIPHY_API_KEY = <API_KEY>
 ``` 
 
+In order for the app to work properly, you will have to provide your own API keys and create the `.env` file yourself.
+
 ## Caveats:
 
 - This app is only available in the United States and uses Fahrenheit.
