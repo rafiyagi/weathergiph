@@ -1,6 +1,6 @@
 # WeatherGiphy!
 
-Gives you the current weather of a location, but in a giphy format!
+Gives you the current weather of a location, but in a giphy format and in an overly dramatic fashion!
 
 A simple [create-react-app](CRA-README.md) setup with React-Bootstrap.
 
