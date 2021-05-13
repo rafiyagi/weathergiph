@@ -22,3 +22,6 @@ Uses https://openweathermap.org/current and https://developers.giphy.com/docs/ap
 `yarn test --verbose`
 
 ## Screenshots:
+![Screenshot 1](./public/screenshots/weathergiphy_1.jpeg)
+![Screenshot 2](./public/screenshots/weathergiphy_2.jpeg)
+![Screenshot 3](./public/screenshots/weathergiphy_3.jpeg)
