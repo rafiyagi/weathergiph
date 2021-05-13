@@ -6,6 +6,19 @@ A simple [create-react-app](CRA-README.md) setup with React-Bootstrap.
 
 Uses https://openweathermap.org/current and https://developers.giphy.com/docs/ap
 
+## Installation
+
+```shell
+% yarn install
+% yarn start
+```
+
 ## Caveats:
 
 - This app is only available in the United States and uses Fahrenheit.
+
+## Testing:
+
+`yarn test --verbose`
+
+## Screenshots:

@@ -1,23 +1,16 @@
-import React, {ChangeEventHandler, useState, FormEvent} from 'react';
-import {Jumbotron, Container, Alert, Spinner, Card, Form, Button, InputGroup} from 'react-bootstrap';
+import React, {ChangeEventHandler, useState, FormEvent} from 'react'
+import {Jumbotron, Container, Alert, Spinner, Card, Form, Button, InputGroup} from 'react-bootstrap'
 import OpenWeather from './openWeather'
-import { GiphyFetch } from '@giphy/js-fetch-api'
-import { IGif } from "@giphy/js-types";
-import { Gif } from "@giphy/react-components";
+import Giphy from './giphyApi'
+import { Gif } from "@giphy/react-components"
+import { IGif } from "@giphy/js-types"
+
 
 const App = (): JSX.Element => {
 	const [zip, setZip] = useState<string>('')
-    const [gif, setGif] = useState<IGif | null>(null);
     const [getWeatherByZip, weatherData, errMsg, processing] = OpenWeather()
-
-    const giphyFetch = new GiphyFetch('sXpGFDGZs0Dv1mmNFvYaGUvYwKX0PWIh')
-
-    const getGif = async () => {
-        const searchTerm = `${weatherData?.city} ${weatherData?.description}`
-        const { data } = await giphyFetch.search(searchTerm, { sort: 'relevant', lang: 'en', limit: 20, type: 'gifs' });
-        const randomIndex = Math.floor(Math.random() * 20)
-        setGif(data?.[randomIndex])
-    }
+    const [gif, setGif] = useState<IGif | null>(null)
+    const [getGif, gifData, gifErrMsg, processingGif] = Giphy()
 
 	const handleLocationInputChange: ChangeEventHandler<HTMLInputElement> = ({
 		target
@@ -28,9 +21,14 @@ const App = (): JSX.Element => {
 	const handleSubmit = async (e: FormEvent) => {
 	    e.preventDefault()
 		await getWeatherByZip(zip)
-		await getGif()
-        if(errMsg.length > 0) {
+        if(!errMsg) {
+            await getGif(`${weatherData?.description} - ${weatherData?.city}`)
+            if (!gifErrMsg) {
+                setGif(gifData)
+            }
+        } else {
             setZip('')
+            setGif(null)
         }
 	}
 
@@ -38,6 +36,7 @@ const App = (): JSX.Element => {
         <Container className="p-3">
             <Jumbotron style={{textAlign: 'center'}}>
                 <iframe
+                    title='WeatherGiphy'
                     src="https://giphy.com/embed/3oeHLglDZz0DJgXBcY"
                     width="480"
                     height="193"
@@ -53,6 +52,14 @@ const App = (): JSX.Element => {
                 <Card style={{marginLeft: 'auto', marginRight: 'auto', width: 500}}>
                     <Card.Header>{weatherData.city}</Card.Header>
                     <div style={{textAlign: "center"}}>
+                        {processingGif && (
+                            <Spinner
+                                as="span"
+                                animation="grow"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                            />)}
                         <Gif gif={gif} width={500}/>
                     </div>
                     <Card.Body>
@@ -62,9 +69,10 @@ const App = (): JSX.Element => {
                     </Card.Body>
                 </Card>
             )}
-            {errMsg.length > 0 && (
+            {(errMsg || gifErrMsg) && (
                 <Alert variant={'danger'}>
-                    {errMsg}
+                    {errMsg && <p>{errMsg}</p>}
+                    {gifErrMsg && <p>{gifErrMsg}</p>}
                 </Alert>
             )}
             <Form onSubmit={(event) => handleSubmit(event)}>
@@ -83,7 +91,7 @@ const App = (): JSX.Element => {
                 </Form.Group>
                 <Button
                     variant="primary"
-                    type={"submit"}
+                    type="submit"
                 >
                     {processing && (
                         <Spinner
@@ -97,7 +105,7 @@ const App = (): JSX.Element => {
                 </Button>
             </Form>
         </Container>
-	);
-};
+	)
+}
 
-export default App;
+export default App

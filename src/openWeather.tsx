@@ -22,7 +22,7 @@ export interface IOpenWeatherData {
     feels_like: number
 }
 
-export default (): [(zip: string) => void, OpenWeatherResponse, string, boolean] => {
+const OpenWeather = (): [(zip: string) => void, OpenWeatherResponse, string, boolean] => {
     const [response, setResponse] = useState<OpenWeatherResponse>(null)
     const [processing, setProcessing] = useState(false)
     const [errorMsg, setErrorMsg] = useState("")
@@ -31,23 +31,27 @@ export default (): [(zip: string) => void, OpenWeatherResponse, string, boolean]
         setProcessing(true)
 
         try {
-            const { data, status } = await get({zip: `${zip},${COUNTRY_CODE}`})
+            // const { data, status } = await get({zip: `${zip},${COUNTRY_CODE}`})
+            const result = await get({zip: `${zip},${COUNTRY_CODE}`})
+            const { data, status } = result
             if (status === 200 && data) {
                 setResponse({
                     city: data?.name,
                     description: data?.weather[0].description,
                     feels_like: data?.main.feels_like
-                });
+                })
                 setErrorMsg("")
             }
             setProcessing(false)
-        } catch (error) {
+        } catch (e) {
             setResponse(null)
-            setErrorMsg(error.message)
+            setErrorMsg(e)
         }
 
         setProcessing(false)
-    };
+    }
 
-    return [getWeatherByZipCode, response, errorMsg, processing];
-};
+    return [getWeatherByZipCode, response, errorMsg, processing]
+}
+
+export default OpenWeather
