@@ -21,7 +21,7 @@ const Giphy = (): [(searchTerm: string) => void, (IGif | null), string, boolean]
             setProcessing(false)
         } catch(e) {
             setGif(null)
-            setErrorMsg(e)
+            setErrorMsg(e.message)
         }
     }
 

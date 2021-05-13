@@ -45,7 +45,7 @@ const OpenWeather = (): [(zip: string) => void, OpenWeatherResponse, string, boo
             setProcessing(false)
         } catch (e) {
             setResponse(null)
-            setErrorMsg(e)
+            setErrorMsg(e.message)
         }
 
         setProcessing(false)
